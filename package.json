@@ -9,18 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@react-three/drei": "^9.80.0",
-    "@react-three/fiber": "^8.13.6",
-    "@types/node": "20.4.1",
-    "@types/react": "18.2.14",
-    "@types/react-dom": "18.2.6",
-    "eslint": "8.44.0",
-    "eslint-config-next": "13.4.9",
-    "next": "13.4.9",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "three": "^0.154.0",
-    "three-addons": "^1.2.0",
-    "typescript": "5.1.6"
+    "@react-three/drei": "^9.80.4",
+    "@react-three/fiber": "^8.13.7",
+    "eslint": "8.47.0",
+    "eslint-config-next": "13.4.19",
+    "next": "13.4.19",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "three": "^0.155.0",
+    "three-addons": "^1.2.0"
   }
 }
