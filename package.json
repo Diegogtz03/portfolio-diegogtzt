@@ -14,9 +14,13 @@
     "@tweenjs/tween.js": "^21.0.0",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.19",
+    "howler": "^2.2.3",
     "next": "13.4.19",
+    "raf": "^3.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-howler": "^5.2.0",
+    "react-icons": "^4.11.0",
     "three": "^0.155.0",
     "three-addons": "^1.2.0"
   }

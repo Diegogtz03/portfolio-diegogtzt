@@ -15,6 +15,13 @@
 # production
 /build
 
+# music files
+/public/media/sounds/music/*.mp3
+
+# old files
+/public/models/olds/*.gltf
+/public/models/*Tryout.gltf
+
 # misc
 .DS_Store
 *.pem
