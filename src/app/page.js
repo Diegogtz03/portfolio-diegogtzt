@@ -1,16 +1,18 @@
 'use client'
 
 import { Canvas, useThree } from '@react-three/fiber'
-import { CameraControls } from '@react-three/drei'
+import { CameraControls, Stats } from '@react-three/drei'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import * as THREE from 'three';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import * as TWEEN from '@tweenjs/tween.js'
 import addLightsToScene from '../app/Lighting/lightsHandler.js'
 import addCameraFocusPoints from './Camera/cameraHandler.js';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import LoadingScreen from '@/components/LoadingScreen.js';
+import RadioControls from '@/components/RadioControls.js';
 
-function Scene() {
+function Scene({ setIsDoneLoading }) {
   const cameraController = useRef();
   const { scene, camera } = useThree();
   const intersectedObjects = useRef([]);
@@ -30,13 +32,23 @@ function Scene() {
     cameraController.current.maxDistance = 10;
   }, []);
 
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
   const loadingManager = new THREE.LoadingManager();
 
+  // Create video texture for TV
+  const tvVideo = document.getElementById('tvVideo');
+  const tvVideoTexture = new THREE.VideoTexture(tvVideo);
+  tvVideoTexture.colorSpace = THREE.SRGBColorSpace;
+  tvVideoTexture.generateMipmaps = true;
+
+  // Create video texture for Computer
+  const monitorVideo = document.getElementById('monitorVideo');
+  const monitorVideoTexture = new THREE.VideoTexture(monitorVideo);
+  monitorVideoTexture.colorSpace = THREE.SRGBColorSpace;
+  monitorVideoTexture.generateMipmaps = true;
+
+  // Set up loading manager on load
   loadingManager.onLoad = () => {
-    // ALLOW USER TO ENTER THE SCENE once all models are loaded
+    setIsDoneLoading(true);
     animate();
   };
 
@@ -64,6 +76,21 @@ function Scene() {
     retroTV.name = 'retroTV';
     retroTV.userData.isContainer = true;
     intersectedObjects.current.push(retroTV);
+
+    // Traverse through the children to find the screen mesh (where the video will be displayed)
+    let tvScreenMesh;
+
+    retroTV.traverse((child) => {
+      if (child.name === 'defaultMaterial005') {
+        tvScreenMesh = child;
+      }
+    });
+
+    // Set the video texture to the screen mesh
+    if (tvScreenMesh) {
+      const tvScreenMaterial = new THREE.MeshBasicMaterial({ map: tvVideoTexture, side: THREE.FrontSide, toneMapped: false });
+      tvScreenMesh.material = tvScreenMaterial;
+    }
   });
 
   // Load => Room Radio Model
@@ -82,10 +109,25 @@ function Scene() {
     retroComputer.name = 'retroComputer';
     retroComputer.userData.isContainer = true;
     intersectedObjects.current.push(retroComputer);
+
+    // Traverse through the children to find the screen mesh (where the video will be displayed)
+    let computerScreenMesh;
+
+    retroComputer.traverse((child) => {
+      if (child.name === 'Cube_screen_0') {
+        computerScreenMesh = child;
+      }
+    });
+
+    // Set the video texture to the screen mesh
+    if (computerScreenMesh) {
+      const computerScreenMaterial = new THREE.MeshBasicMaterial({ map: monitorVideoTexture, side: THREE.FrontSide, toneMapped: false });
+      computerScreenMesh.material = computerScreenMaterial;
+    }
   });
 
   // Add lights to scene
-  addLightsToScene(scene);
+  addLightsToScene(scene, camera, cameraController);
 
   // Add camera focus points
   addCameraFocusPoints(camera, cameraController, intersectedObjects);
@@ -98,14 +140,28 @@ function Scene() {
   renderer.render(scene, camera);
 
   return (
-    <CameraControls ref={ cameraController }> </CameraControls>
+    <>
+      <Stats />
+      <CameraControls ref={ cameraController }> </CameraControls>
+    </>
   );
 };
 
 export default function Home() {
+  const [isDoneLoading, setIsDoneLoading] = useState(false);
+  const tvVideoRef = useRef();
+  const monitorVideoRef = useRef();
+  const musicHandler = useRef();
+
   return (
-    <Canvas style={{height: '100vh'}}>
-      <Scene />
-    </Canvas>
+    <>
+      <RadioControls ref={musicHandler} />
+      <video ref={tvVideoRef} id="tvVideo" src="/media/videos/TVvideo.mp4" loop muted></video>
+      <video ref={monitorVideoRef} id="monitorVideo" src="/media/videos/MonitorScreen.mp4" loop muted></video>
+      <LoadingScreen doneLoading={isDoneLoading} musicHandler={musicHandler} tvVideoRef={tvVideoRef} monitorVideoRef={monitorVideoRef} />
+      <Canvas style={{height: '100vh'}}>
+        <Scene setIsDoneLoading={setIsDoneLoading} />
+      </Canvas>
+    </>
   )
 }
