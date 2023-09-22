@@ -1,0 +1,53 @@
+.wrapper {
+  height: fit-content;
+  width: fit-content;
+
+  display: flex;
+  flex-direction: row;
+  row-gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  margin: auto;
+
+  z-index: 2;
+}
+
+.isVisible:hover {
+  opacity: 1;
+}
+
+.buttonWrapper {
+  display: flex;
+  gap: 20px;
+
+  background-color: rgba(66, 66, 66, 0.542);
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.buttonWrapper .button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  transition: all 0.2s ease-in-out;
+}
+
+.buttonWrapper .button:hover {
+  scale: 0.98;
+  opacity: 0.9;
+}
+
+.buttonWrapper .button:active {
+  scale: 0.92;
+}
+
+.buttonWrapper .button svg {
+  width: 2rem ;
+  height: 2rem;
+}
