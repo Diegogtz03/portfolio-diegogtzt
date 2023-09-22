@@ -68,7 +68,7 @@ export default function addCameraFocusPoints(camera, cameraController, intersect
     // If mouse is over an object, focus on it with focusOnObject()
     if (intersects.length > 0) {
       const intersectObject = getContainerObjByChild(intersects[0].object);
-      focusOnObject(camera, cameraController, intersectObject.name);
+      focusOnObject(cameraController, intersectObject.name);
     }
   }
 
@@ -132,7 +132,7 @@ function getContainerObjByChild(child) {
 }
 
 // Function to focus on an object
-function focusOnObject(camera, cameraController, objectName) {
+function focusOnObject(cameraController, objectName) {
   // Disable raycaster
   raycastEnabled = false;
   currentFocusedObject = objectName;
@@ -182,6 +182,8 @@ function focusOnObject(camera, cameraController, objectName) {
     cameraController.current.setPosition(3, 14.715, -10.263, true);
     cameraController.current.setTarget(1, 7.315, -19.263, true);
     focusLight("on", "radioLight");
+
+    // musicHandler.focusVolume();
 
     // Limit camera movement
     cameraController.current.minDistance = 9;
